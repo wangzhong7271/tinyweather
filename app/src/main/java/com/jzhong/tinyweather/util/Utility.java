@@ -2,9 +2,11 @@ package com.jzhong.tinyweather.util;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.jzhong.tinyweather.db.City;
 import com.jzhong.tinyweather.db.County;
 import com.jzhong.tinyweather.db.Province;
+import com.jzhong.tinyweather.gson.Weather;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,5 +74,17 @@ public class Utility {
             }
         }
         return false;
+    }
+
+    public static Weather handleWeatherResponse(String response){
+        try {
+            JSONObject jsonObject=new JSONObject(response);
+            JSONArray jsonArray=jsonObject.getJSONArray("HeWeather");
+            String weatherContent=jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent,Weather.class);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }
