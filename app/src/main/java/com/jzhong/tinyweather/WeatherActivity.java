@@ -1,5 +1,6 @@
 package com.jzhong.tinyweather;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -26,6 +27,7 @@ import com.bumptech.glide.Glide;
 import com.jzhong.tinyweather.gson.Basic;
 import com.jzhong.tinyweather.gson.Forecast;
 import com.jzhong.tinyweather.gson.Weather;
+import com.jzhong.tinyweather.service.AutoUpdateService;
 import com.jzhong.tinyweather.util.HttpUtil;
 import com.jzhong.tinyweather.util.Utility;
 
@@ -83,6 +85,9 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
+        Intent intent=new Intent(this, AutoUpdateService.class);
+        startService(intent);
+
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString=prefs.getString("weather",null);
         String bingPic=prefs.getString("bing_pic",null);
@@ -118,7 +123,7 @@ public class WeatherActivity extends AppCompatActivity {
 
     public void requestWeather(final String weatherId){
         mWeatherId=weatherId;
-        Log.d("MyName:",mWeatherId);
+        //Log.d("MyName:",mWeatherId);
         String weatherUrl="http://guolin.tech/api/weather?cityid="+weatherId+"&key=1398ad0321404535b573acad493a8979";
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
@@ -127,9 +132,9 @@ public class WeatherActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Toast.makeText(WeatherActivity.this,"获取网络天气信息失败!",Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
-                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
