@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Suggestion {
-    @SerializedName("conf")
+    @SerializedName("comf")
     public Comfort comfort;
 
     @SerializedName("cw")
